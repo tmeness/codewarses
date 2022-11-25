@@ -1,10 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <meta name="viewport" content="width=width-device,initial-scale=1.0">
+    <title>Todo list</title>
+
+    <link rel="stylesheet" href="main.css"/>
+
 </head>
 <body>
+
+<!--виділяють три симантичні теги: header, main, footer-->
+    <header>
+        <h1>Список шо робити</h1>
+        <form id="new-todo-form" >
+            <input
+                    type="text"
+                    placeholder="Ну шо там за планом?"
+                    id="new-todo-input"/>
+            <input
+                    type="submit"
+                    id="new-todo-submit"
+                    value="Додати"/>
+        </form>
+
+    </header>
+    <main>
+        <section id="task-list">
+<!--                   id для індивідуального дизайну, class коли багато елементів з однаковим-->
+            <h2>Завданнячка</h2>
+            <div id="tasks">
+<!--                <div class="task">-->
+<!--                    <div class="content">-->
+<!--                        <input-->
+<!--                                type="text"-->
+<!--                                class="text"-->
+<!--                                value="Нове цікаве завдання"-->
+<!--                                readonly-->
+<!--                        />-->
+<!--                    </div>-->
+
+                    <!--                            ми можемо лише читати завдання, для редагування кнопка  редагувати-->
+<!--                    <div class= "actions">-->
+<!--                        <button class="edit">Редагувати</button>-->
+<!--                        <button class="delete">В смітничок</button>-->
+<!--                    </div>-->
+<!--                </div>-->
+
+            </div>
+        </section>
+    </main>
+    <script src="todo-list.js"></script>
+
+
 
 </body>
 </html>

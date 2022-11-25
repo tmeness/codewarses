@@ -1,0 +1,171 @@
+:root{
+    --dark: #2b1b44;
+    --darker: #333349;
+    --the-darkest: #212123;
+    --gray: #ffffff;
+    --light: #ecdbdb;
+    --pink: #ff59e7;
+    --purple: #8737d5
+}
+
+
+*{
+    box-sizing: border-box;
+    margin: 0;
+    font-family: 'Fira sans', sans-serif;
+}
+body{
+    display: flex;
+    /*Властивість display визначає поведінку відображення (тип вікна візуалізації) елемента.*/
+    flex-direction: column;
+    min-height: 100vh;
+    background:rgb(238,174,202);
+    background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(35,58,85,1) 100%);
+    color: var(--light);
+
+}
+
+header{
+    padding: 1rem 6rem;
+    width: 100%;
+    text-align: center;
+
+    margin-top: 50px;
+}
+header h1{
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: var(--gray);
+    margin-bottom: 1rem;
+    
+}
+
+#new-todo-form{
+    display: flex;
+
+}
+ input, button{
+     appearance: none;
+     border: none;
+     outline: none;
+     background: none;
+ }
+
+#new-todo-input{
+    flex: 1 1 0%;
+    background-color: var(--darker);
+    padding: 1rem;
+    border-radius: 6rem;
+    margin-right: 0.5rem;
+    color: var(--light);
+    font-size: 1.25rem;
+}
+/* :: перед івентами, : перед псевдо-елементами */
+#new-todo-input::placeholder {
+    color: var(--gray);
+    font-size: 1.25rem;
+
+}
+#new-todo-submit{
+    color: var(--pink);
+    font-size: 1.25rem;
+    font-weight: 700;
+    background-image: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(170,187,255,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    cursor:pointer;
+    transition: 0.4s;
+}
+
+#new-todo-submit:hover{
+    opacity: 0.8;
+}
+
+#new-todo-submit:active{
+    opacity: 0.6;
+}
+
+main{
+    flex: 1 1 0%;
+    width: 100%;
+    margin: 0 auto;
+
+}
+
+#task-list{
+    padding: 1rem 6rem;
+    width: 100%;
+}
+
+#task-list h2{
+    padding: 1rem ;
+    font-size: 1.5rem;
+    font-weight: 300;
+    color: var(--gray);
+    margin-bottom: 1rem;
+
+}
+#tasks .task{
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--the-darkest);
+    padding: 1rem ;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+}
+
+#tasks .task .content {
+    flex: 1 1 0%;
+
+
+}
+#tasks .task .content .text{
+    color: var(--light);
+    font-size: 1.125rem;
+    width: 100%;
+    display: block;
+    transition: 0.4s;
+
+}
+#tasks .task .content .text:not(:read-only){
+    color: #ec18c9;
+
+}
+#tasks .task .actions {
+    display: flex;
+    margin: 0 -0.5rem;
+
+}
+.task .actions button {
+    cursor: pointer;
+    margin: 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: 0.4s;
+}
+
+.task .actions button:hover{
+
+    opacity: 0.8;
+}
+
+.task .actions button:active{
+    opacity: 0.6;
+}
+
+.task .actions .edit{
+    color: var(--pink);
+    background-image:  linear-gradient( rgb(88, 185, 231) 0%, rgb(43, 87, 243) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+
+.task .actions .delete{
+    background-image: linear-gradient( rgb(220, 73, 73) 23%, rgb(222, 109, 109) 96%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+
