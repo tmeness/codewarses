@@ -1,77 +1,115 @@
-// 1. fix the naming of the variables :) camelCase and use full names :)
+// 1. fix the naming of the variables :) camelCase and use full names :) done
 // 2. move task creation into a separate function :)
 // 3. move working with localStorage into separate class :)
-// 4. move creation DOM elements into separate functions :)
-// 5. rename function storage to reflect what it is doing :)
+// 4. move creation DOM elements into separate functions :) done
+// 5. rename function storage to reflect what it is doing :) done
 // 6. fix formatting
 
-
-// createElement(
+//
+// createDOMElement(
 //     "div",
 //     {
 //         classList: ['text'],
 //         type: 'text',
 //         value: 'text',
 //         attributes: {
-//             readonly: 'readonly'
+//             key: 'readonly'
+
 //         }
 //     }
 // )
+//
 
+
+function createDOMElement(tagName, options = {}) {
+    const element = document.createElement(tagName);
+
+    if ('classList' in options){
+        for (let i = 0; i < options.classList.length; i++){
+            element.classList.add(options.classList[i])
+        }
+    }
+
+    if ('type' in options){
+        element.type = options.type
+    }
+
+    if ('value' in options){
+        element.value = options.value
+    }
+
+    if ('attributes' in options){
+        for (const keyAndValue of Object.entries(options.attributes)){
+            element.setAttribute(keyAndValue[0], keyAndValue[1]) ;
+        }
+    }
+
+    if ('innerHTML' in options){
+        element.innerHTML = options.innerHTML
+    }
+
+    return element;
+}
 
 
 window.addEventListener('load',() => {
     const form = document.querySelector("#new-todo-form");
     const input = document.querySelector("#new-todo-input");
-    const list_el = document.querySelector("#tasks");
+    const listElement = document.querySelector("#tasks");
 
-    function storage(value){
+    function getTasksFromLocalStorage(value){
+        
+        const taskElementStorage = createDOMElement("div", {
+            classList: ["task"]
+        });
 
-        const task_el_storage = document.createElement("div");
-        task_el_storage.classList.add("task");
+        const taskContentElementStorage = createDOMElement("div", {
+            classList: ["content"]
+        });
 
-        const task_content_el_storage = document.createElement("div");
-        task_content_el_storage.classList.add("content");
+        taskElementStorage.appendChild(taskContentElementStorage);
 
-        task_el_storage.appendChild(task_content_el_storage);
+        const taskInputElementStorage = createDOMElement( "input" , {
+            classList: ["text"],
+            type: "text",
+            value: value,
+            attributes: { "readonly": "readonly"}
+        })
 
-        const task_input_el_storage = document.createElement("input");
-        task_input_el_storage.classList.add("text");
-        task_input_el_storage.type = "text";
-        task_input_el_storage.value = value;
-        task_input_el_storage.setAttribute("readonly","readonly");
+        taskContentElementStorage.appendChild(taskInputElementStorage);
+        
+        const taskActionsElementStorage = createDOMElement("div", {
+            classList: ["actions"]
+        })
 
-        task_content_el_storage.appendChild(task_input_el_storage);
+        const taskEditElementStorage = createDOMElement("button", {
+            classList: ["edit"],
+            innerHTML: "Редагувати"
+        })
+        
+        const taskDeleteElementStorage = createDOMElement("button", {
+            classList: ["delete"],
+            innerHTML: "В смітничок"
+        })
 
-        const task_actions_el_storage = document.createElement("div");
-        task_actions_el_storage.classList.add("actions");
+        taskActionsElementStorage.appendChild(taskEditElementStorage);
+        taskActionsElementStorage.appendChild(taskDeleteElementStorage);
 
-        const task_edit_el_storage = document.createElement("button");
-        task_edit_el_storage.classList.add("edit");
-        task_edit_el_storage.innerHTML = "Редагувати";
+        taskElementStorage.appendChild(taskActionsElementStorage);
 
-        const task_delete_el_storage = document.createElement("button");
-        task_delete_el_storage.classList.add("delete");
-        task_delete_el_storage.innerHTML = "В смітничок";
-
-        task_actions_el_storage.appendChild(task_edit_el_storage);
-        task_actions_el_storage.appendChild(task_delete_el_storage);
-
-        task_el_storage.appendChild(task_actions_el_storage);
-
-        list_el.appendChild(task_el_storage);
+        listElement.appendChild(taskElementStorage);
 
         input.value = "";
 
-        task_edit_el_storage.addEventListener('click', () =>{
+        taskEditElementStorage.addEventListener('click', () =>{
             console.log('Hello World!');
-            if (task_edit_el_storage.innerText.toLowerCase() === "редагувати") {
-                task_input_el_storage.removeAttribute("readonly");
-                task_input_el_storage.focus();
-                task_edit_el_storage.innerText = "Зберегти";
+            if (taskEditElementStorage.innerText.toLowerCase() === "редагувати") {
+                taskInputElementStorage.removeAttribute("readonly");
+                taskInputElementStorage.focus();
+                taskEditElementStorage.innerText = "Зберегти";
             } else {
-                task_input_el_storage.setAttribute("readonly", "readonly");
-                task_edit_el_storage.innerText = "Редагувати";
+                taskInputElementStorage.setAttribute("readonly", "readonly");
+                taskEditElementStorage.innerText = "Редагувати";
             }
 
             //EDIT TASK IN LOCAL STORAGE
@@ -87,9 +125,9 @@ window.addEventListener('load',() => {
             for (let i = 0; i < storageTasks.length; i++) {
                 console.log(storageTasks[i], value);
                 if ( storageTasks[i].task === value) {
-                    console.log(task_input_el_storage);
-                    console.log(task_input_el_storage.value);
-                    storageTasks[i].task = task_input_el_storage.value;
+                    console.log(taskInputElementStorage);
+                    console.log(taskInputElementStorage.value);
+                    storageTasks[i].task = taskInputElementStorage.value;
                     console.log(storageTasks);
 
                 }
@@ -100,8 +138,8 @@ window.addEventListener('load',() => {
             localStorage.setItem('taskKey', JSON.stringify(storageTasks));
 
         })
-        task_delete_el_storage.addEventListener('click', () => {
-            list_el.removeChild(task_el_storage);
+        taskDeleteElementStorage.addEventListener('click', () => {
+            listElement.removeChild(taskElementStorage);
 
             //DELETE FROM LOCAL STORAGE
 
@@ -130,7 +168,7 @@ window.addEventListener('load',() => {
     const storageTasks = JSON.parse(localStorage.getItem('taskKey')) || [];
 
     for (let i = 0; i < storageTasks.length; i++) {
-        storage(storageTasks[i].task);
+        getTasksFromLocalStorage(storageTasks[i].task);
     }
 
     form.addEventListener('submit', (e) => {
@@ -154,23 +192,23 @@ window.addEventListener('load',() => {
 
             }
         }
+        
+        const taskElement = createDOMElement("div", {
+            classList: ["task"]
+        });
 
+        const taskContentElement = createDOMElement("div", {
+            classList: ["content"]
+        });
 
-        const task_el = document.createElement("div");
-        task_el.classList.add("task");
+        taskElement.appendChild(taskContentElement);
 
-        const task_content_el = document.createElement("div");
-        task_content_el.classList.add("content"); //додаємо css клас до елемента
-        // task_content_el.innerText = task;
-
-        task_el.appendChild(task_content_el); // додаємо child до елемента task_el
-
-        const task_input_el = document.createElement("input");
-        task_input_el.classList.add("text");
-        task_input_el.type = "text";
-        task_input_el.value = task;
-        console.log(task);
-        task_input_el.setAttribute("readonly","readonly");
+        const taskInputElement = createDOMElement( "input" , {
+            classList: ["text"],
+            type: "text",
+            value: task,
+            attributes: { "readonly": "readonly"}
+        })
 
         const allTasks = JSON.parse(localStorage.getItem('taskKey') || '[]');
         allTasks.push({ task: task });
@@ -178,38 +216,40 @@ window.addEventListener('load',() => {
         console.log(allTasks);
         localStorage.setItem('taskKey', JSON.stringify(allTasks));
 
+        taskContentElement.appendChild(taskInputElement);
 
-        task_content_el.appendChild(task_input_el);
+        const taskActionsElement = createDOMElement("div", {
+            classList: ["actions"] //додаємо css клас до елемента
+        })
 
-        const task_actions_el = document.createElement("div");
-        task_actions_el.classList.add("actions");
+        const taskEditElement = createDOMElement("button", {
+            classList: ["edit"],
+            innerHTML: "Редагувати"
+        })
 
-        const task_edit_el = document.createElement("button");
-        task_edit_el.classList.add("edit");
-        task_edit_el.innerHTML = "Редагувати";
+        const taskDeleteElement = createDOMElement("button", {
+            classList: ["delete"],
+            innerHTML: "В смітничок"
+        })
 
-        const task_delete_el = document.createElement("button");
-        task_delete_el.classList.add("delete");
-        task_delete_el.innerHTML = "В смітничок";
+        taskActionsElement.appendChild(taskEditElement);
+        taskActionsElement.appendChild(taskDeleteElement);
 
-        task_actions_el.appendChild(task_edit_el);
-        task_actions_el.appendChild(task_delete_el);
+        taskElement.appendChild(taskActionsElement);
 
-        task_el.appendChild(task_actions_el);
-
-        list_el.appendChild(task_el);
+        listElement.appendChild(taskElement);
 
         input.value = "";
 
-        task_edit_el.addEventListener('click', () =>{
+        taskEditElement.addEventListener('click', () =>{
             console.log('Hello World!');
-            if (task_edit_el.innerText.toLowerCase() === "редагувати") {
-                task_input_el.removeAttribute("readonly");
-                task_input_el.focus();
-                task_edit_el.innerText = "Зберегти";
+            if (taskEditElement.innerText.toLowerCase() === "редагувати") {
+                taskInputElement.removeAttribute("readonly");
+                taskInputElement.focus();
+                taskEditElement.innerText = "Зберегти";
             } else {
-                task_input_el.setAttribute("readonly", "readonly");
-                task_edit_el.innerText = "Редагувати";
+                taskInputElement.setAttribute("readonly", "readonly");
+                taskEditElement.innerText = "Редагувати";
             }
 
             //EDIT TASK IN LOCAL STORAGE
@@ -225,9 +265,9 @@ window.addEventListener('load',() => {
             for (let i = 0; i < storageTasks.length; i++) {
                 console.log(storageTasks[i], task);
                 if ( storageTasks[i].task === task) {
-                    console.log(task_input_el);
-                    console.log(task_input_el.value);
-                    storageTasks[i].task = task_input_el.value;
+                    console.log(taskInputElement);
+                    console.log(taskInputElement.value);
+                    storageTasks[i].task = taskInputElement.value;
                     console.log(storageTasks);
 
                 }
@@ -238,8 +278,8 @@ window.addEventListener('load',() => {
             localStorage.setItem('taskKey', JSON.stringify(storageTasks));
 
         })
-        task_delete_el.addEventListener('click', () => {
-            list_el.removeChild(task_el);
+        taskDeleteElement.addEventListener('click', () => {
+            listElement.removeChild(taskElement);
 
             //DELETE FROM LOCAL STORAGE
 
