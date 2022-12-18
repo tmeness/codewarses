@@ -6,29 +6,32 @@
 
 function createDOMElement(tagName, options = {}) {
     const element = document.createElement(tagName);
+    const optionHandlers = {
+        'classList': (el, opts) => {
+            for (const cssClass of opts.classList) {
+                el.classList.add(cssClass);
+            }
+        },
+        'type': (el, opts) => {
+            el.type = opts.type
+        },
+        'value': (el, opts) => {
+            el.value = opts.value
+        },
+        'attributes': (el, opts) => {
+            for (const keyAndValue of Object.entries(opts.attributes)) {
+                el.setAttribute(keyAndValue[0], keyAndValue[1]);
+            }
+        },
+        'innerHTML': (el, opts) => {
+            el.innerHTML = opts.innerHTML
+        },
+    }
 
-    if ('classList' in options) {
-        for (let i = 0; i < options.classList.length; i++) {
-            element.classList.add(options.classList[i])
+    for (const key in optionHandlers) {
+        if (key in options) {
+            optionHandlers[key](element, options);
         }
-    }
-
-    if ('type' in options) {
-        element.type = options.type
-    }
-
-    if ('value' in options) {
-        element.value = options.value
-    }
-
-    if ('attributes' in options) {
-        for (const keyAndValue of Object.entries(options.attributes)) {
-            element.setAttribute(keyAndValue[0], keyAndValue[1]);
-        }
-    }
-
-    if ('innerHTML' in options) {
-        element.innerHTML = options.innerHTML
     }
 
     return element;
@@ -49,7 +52,7 @@ class TasksStorage {
         const allTasks = this.getAllTasks();
         allTasks.push({task: taskName});
 
-        return this.#storage.setItem('taskKey', JSON.stringify(allTasks));
+        return this.setTasks(allTasks);
     }
 
     setTasks(newTasks) {
@@ -58,39 +61,32 @@ class TasksStorage {
 
     editTask(oldValue, newValue) {
         const storageTasks = this.getAllTasks();
-
-        for (let i = 0; i < storageTasks.length; i++) {
-            if (storageTasks[i].task === oldValue) {
+        const editedStorageTasks = storageTasks.map((storageTask) => {
+            if (storageTask.task === oldValue) {
                 console.log(newValue);
-                storageTasks[i].task = newValue;
+                storageTask.task = newValue;
             }
-        }
+        });
 
-        this.setTasks(storageTasks);
+        this.setTasks(editedStorageTasks);
     }
 
     deleteTask(value) {
         const storageTasks = this.getAllTasks();
+        const filteredTasks = storageTasks.filter((storageTask) => {
+            return storageTask.task !== value
+        })
 
-        for (let j = 0; j < storageTasks.length; j++) {
-            if (storageTasks[j].task === value) {
-                storageTasks.splice(j, 1);
-            }
-        }
-
-        this.setTasks(storageTasks);
+        this.setTasks(filteredTasks);
     }
 
     doesTaskExist(task) {
         const storageTasks = this.getAllTasks();
+        const storageTask = storageTasks.find((storageTask) => {
+            return task === storageTask.task;
+        })
 
-        for (let i = 0; i < storageTasks.length; i++) {
-            if (task === storageTasks[i].task) {
-                return true;
-            } else {
-                return false;
-            }
-        }
+        return !!storageTask;
     }
 }
 
@@ -102,10 +98,8 @@ const input = document.querySelector("#new-todo-input");
 const listElement = document.querySelector("#tasks");
 
 window.addEventListener('load', () => {
-    const storageTasks = tasksLocalStorage.getAllTasks();
-
-    for (let i = 0; i < storageTasks.length; i++) {
-        renderTask(storageTasks[i].task);
+    for (const storageTask of tasksLocalStorage.getAllTasks()) {
+        renderTask(storageTask.task);
     }
 
     form.addEventListener('submit', (e) => {
